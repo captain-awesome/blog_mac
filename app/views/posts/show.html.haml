@@ -2,21 +2,22 @@
 	%h1.title= @post.title
 
 	%p.date
-		= "Submitted #{time_ago_in_words(@post.created_at)} Ago |" 
-		-if user_signed_in?
-			=link_to 'Edit', edit_post_path(@post)
-			|
-			=link_to 'Delete', post_path(@post), method: :delete, data: {confirm: 'Are you sure?'}
-
+		= "Submitted #{time_ago_in_words(@post.created_at)} Ago"
 	%p.body= @post.body
+	%p= @post.user.email
+	-if @post.user == current_user
+		=link_to 'Edit', edit_post_path(@post)
+		|
+		=link_to 'Delete', post_path(@post), method: :delete, data: {confirm: 'Are you sure?'}
 
 	#comments
 		%h2
-			= @post.comments.count
-			Comments
+			= pluralize( @post.comments.count, "Comment" )
 			= render @post.comments
+		
+		-if user_signed_in?
+			%h3 
+				Add Comment:
 
-		%h3
-		Add Comment:
-		%p
-		= render "comments/form"
+			%p
+				= render "comments/form"
